@@ -9,7 +9,7 @@ Listen up. If you're tired of manually navigating directories like a commoner, y
 1. **Clone this into your home directory:**
 
    ```bash
-   git clone [https://github.com/YOUR_USERNAME/neckBeard.git](https://github.com/rallanvila/neckBeard.git) ~/.neckBeard
+   git clone https://github.com/rallanvila/neckBeard.git ~/.neckBeard
    ```
 
 2. **Add it to your PATH (So you can feel like a power user):**
