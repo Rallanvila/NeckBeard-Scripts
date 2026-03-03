@@ -6,7 +6,7 @@ SCRIPT_NAME=$1
 
 # Help menu if no argument is provided
 if [ -z "$SCRIPT_NAME" ]; then
-    echo "Usage: neckBeard <scriptName>"
+    echo "Usage: neckbeard <scriptName>"
     echo "Available scripts:"
     fd . "$INSTALL_DIR/scripts" -t f -e sh --exec echo '{/.}'
     # ls "$INSTALL_DIR/scripts" | sed 's/\.sh//'
