@@ -1,5 +1,7 @@
 #!/bin/bash
+
 REPO_DIR="$HOME/.neckBeard"
+GITHUB_URL="https://github.com/Rallanvila/NeckBeard-Scripts.git"
 
 # 1. Clone or Update
 if [ -d "$REPO_DIR" ]; then
@@ -7,31 +9,25 @@ if [ -d "$REPO_DIR" ]; then
     cd "$REPO_DIR" && git pull
 else
     echo "Cloning neckBeard..."
-    git clone https://github.com/Rallanvila/NeckBeard-Scripts.git "$REPO_DIR"
+    git clone "$GITHUB_URL" "$REPO_DIR"
 fi
 
-# 2. Make everything executable
+# 2. Fix Permissions (Prevents 'permission denied')
 chmod +x "$REPO_DIR/neckbeard"
 chmod +x "$REPO_DIR/scripts/"*.sh
 
-# 3. Add to PATH if not already there
+# 3. Path Configuration
 if [[ ":$PATH:" != *":$REPO_DIR:"* ]]; then
     echo "Adding neckBeard to your PATH..."
-    
-    # Detect shell config file
-    if [ -n "$ZSH_VERSION" ] || [ -f "$HOME/.zshrc" ]; then
-        SHELL_CONFIG="$HOME/.zshrc"
-    else
-        SHELL_CONFIG="$HOME/.bashrc"
-    fi
+    # Detect shell config
+    SHELL_CONFIG="$HOME/.zshrc"
+    [[ "$SHELL" == *"bash"* ]] && SHELL_CONFIG="$HOME/.bashrc"
     
     echo "export PATH=\"\$PATH:$REPO_DIR\"" >> "$SHELL_CONFIG"
     
-    # Source it for the current session (though this only affects this subshell)
-    # shellcheck source=/dev/null
-    source "$SHELL_CONFIG"
-    
-    echo "✅ Installed! Run 'source $SHELL_CONFIG' or restart your terminal."
+    # Reload shell for this session
+    export PATH="$PATH:$REPO_DIR"
+    echo "✅ Path updated. Run 'source $SHELL_CONFIG' to finalize your current terminal."
 fi
 
-echo "🧔 You can now run neckbeard scripts"
+echo "🧔 Setup complete, you can now run neckbeard scripts!"
