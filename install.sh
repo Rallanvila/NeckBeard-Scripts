@@ -34,4 +34,4 @@ if [[ ":$PATH:" != *":$REPO_DIR:"* ]]; then
     echo "✅ Installed! Run 'source $SHELL_CONFIG' or restart your terminal."
 fi
 
-echo "🚀 You can now run: neckbeard fzfDirectories"
+echo "🧔 You can now run neckbeard scripts"
