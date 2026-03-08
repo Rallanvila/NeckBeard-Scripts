@@ -9,58 +9,104 @@ Listen up. If you're tired of manually navigating directories like a commoner, y
 1. **Clone this into your home directory:**
 
    ```bash
-   git clone https://github.com/rallanvila/neckBeard.git ~/.neckBeard
+   git clone https://github.com/Rallanvila/NeckBeard-Scripts.git ~/.neckBeard
    ```
 
-2. **Add it to your PATH (So you can feel like a power user):**
-   Add this line to your `~/.zshrc` or `~/.bashrc`:
+2. **Run the installer:**
 
-```bash
-export PATH="$PATH:$HOME/.neckBeard"
-```
+   ```bash
+   bash ~/.neckBeard/install.sh
+   ```
 
-1. **Reload your shell:**
+3. **Reload your shell:**
    Run `source ~/.zshrc` or just open a new terminal tab.
 
 ---
 
 ## 🛑 Requirements
 
-If you don't have these installed, the script will exit with an error. Don't say I didn't warn you:
+Each script declares its own dependencies and will prompt you to install any that are missing via `pacman` (Arch). Don't say I didn't warn you:
 
-- **fzf**: For the interactive menus.
-- **fd**: Because `find` is slow and we have things to do.
-- **tmuxinator**: To manage your sessions.
-  - tmuxinator `.yaml` project in your `~/.config/tmuxinator/` [See example-tmuxinatorFolder](./example-tmuxinatorFolder/)
-- **Ruby**: Specifically, ensure the `erb` gem is available (
+- **fzf** — interactive menus
+- **fd** — because `find` is slow and we have things to do
+- **tmuxinator** — session management; requires a `.yml` project in `~/.config/tmuxinator/` ([see example](./example-tmuxinatorFolder/))
+- **imagemagick** (`magick`) — image optimization
+- **Ruby** — ensure `erb` is available in your PATH for tmuxinator
+
+---
 
 ## 🛠 Usage
 
 The entry point is the `neckBeard` command. It looks into the `scripts/` folder and executes whatever subcommand you tell it to.
 
-### The Flagship: `fzfDirectories`
+### `tmuxinator`
 
 Stop typing `cd` followed by `tmuxinator start`. This script uses `fzf` to pick a config and a project folder in one go.
 
 ```bash
-neckBeard fzfDirectories
-
+neckBeard tmuxinator
 ```
 
-- **First Run**: It’ll ask for your `dev` directory (e.g., `~/dev/alta`).
-- **Persistent Settings**: It saves your path to `~/dev/neckBeardScripts/settings.env` so it doesn't bother you again.
-- **The Workflow**: Select a Tmuxinator `.yml` config → Select the project folder subdirectory → Get to work.
-- **Reset**: Messed up your path? Run `neckBeard fzfDirectories -r` to wipe the config and start over.
+- **First Run**: prompts for your `dev` directory and saves it to `settings.env`.
+- **Reset**: `neckBeard tmuxinator -r` — wipes the config and prompts again.
+- **Workflow**: Select a Tmuxinator `.yml` → Select a subdirectory → Get to work.
+
+### `img-optimize`
+
+Batch-converts images in the current directory to WebP at three sizes (hero, blog, thumb), output to `web_optimized/`.
+
+```bash
+neckBeard img-optimize
+```
+
+Requires `magick` (imagemagick) and `fd`. If `bat` is installed it previews the script logic before running.
+
+### `nb-worktrees` _(coming soon)_
+
+Git worktree management. Work in progress.
 
 ---
 
-## 📂 Adding Your Own Scripts
+## 📂 Project Structure
+
+```
+scripts/
+├── lib/
+│   ├── colors.sh       # Shared color palette (source in every script)
+│   └── check-deps.sh   # check_deps() function with install prompt
+├── img-optimize.sh
+├── nb-worktrees.sh
+└── tmuxinator.sh
+```
+
+### Shared Libraries
+
+Every script sources `lib/colors.sh` and `lib/check-deps.sh` at the top:
+
+```bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/colors.sh"
+source "$SCRIPT_DIR/lib/check-deps.sh"
+```
+
+`check_deps` takes a list of commands, detects which are missing, and offers a `pacman` install prompt. Map command names to package names with an associative array when they differ:
+
+```bash
+declare -A DEPS_PACKAGES=([magick]="imagemagick")
+check_deps magick fd
+```
+
+---
+
+## ✏️ Adding Your Own Scripts
 
 Want to extend the beard?
 
-1. Drop a `.sh` file into the `scripts/` directory.
-2. Make it executable: `chmod +x scripts/your_script.sh`.
-3. Run it via `neckBeard your_script`.
+1. Drop a `.sh` file into `scripts/`.
+2. Source the shared libs at the top (see above).
+3. Declare your deps: `check_deps your-tool`.
+4. Make it executable: `chmod +x scripts/your_script.sh`.
+5. Run it via `neckBeard your_script`.
 
 ---
 

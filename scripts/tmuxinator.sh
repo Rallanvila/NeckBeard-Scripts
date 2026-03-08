@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/colors.sh
+source "$SCRIPT_DIR/lib/colors.sh"
+# shellcheck source=lib/check-deps.sh
+source "$SCRIPT_DIR/lib/check-deps.sh"
+
 # Unset to prevent inherited values from the current shell session
 unset DEV_DIR_PATH
 
-# Define colors (using literal escape characters for Heredoc compatibility)
-RED=$'\e[0;31m'
-GREEN=$'\e[0;32m'
-YELLOW=$'\e[1;33m'
-BLUE=$'\e[0;34m'
-PURPLE=$'\e[0;35m'
-CYAN=$'\e[0;36m'
-NC=$'\e[0m' 
+# --- DEPENDENCY CHECK ---
+check_deps fzf fd tmuxinator
 
 # Define paths
 CONFIG_DIR="$HOME/dev/neckBeardScripts"
@@ -20,7 +20,7 @@ TMUX_CONFIG_DIR="$HOME/.config/tmuxinator"
 # --- HELP FUNCTION ---
 show_help() {
     cat << EOF
-${PURPLE}Usage:${NC} ./fzfDirectories.sh [OPTIONS]
+${PURPLE}Usage:${NC} ./tmuxinator.sh [OPTIONS]
 
 An interactive script to boot Tmuxinator projects by selecting directories.
 
@@ -76,11 +76,6 @@ source "$CONFIG_FILE"
 # --- VALIDATE ENVIRONMENT ---
 if [ ! -d "$DEV_DIR_PATH" ]; then
     echo -e "${RED}Error: $DEV_DIR_PATH does not exist.${NC} Check $CONFIG_FILE"
-    exit 1
-fi
-
-if ! command -v tmuxinator &> /dev/null; then
-    echo -e "${RED}Error: tmuxinator not found.${NC} Ensure Ruby gems are in your PATH"
     exit 1
 fi
 
