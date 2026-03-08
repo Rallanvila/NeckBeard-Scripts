@@ -39,6 +39,12 @@ Each script declares its own dependencies and will prompt you to install any tha
 
 The entry point is the `neckBeard` command. It looks into the `scripts/` folder and executes whatever subcommand you tell it to.
 
+```bash
+neckbeard --help          # list subcommands
+neckbeard <subcommand> -h # subcommand usage
+man neckbeard             # full manual
+```
+
 ### `tmuxinator`
 
 Stop typing `cd` followed by `tmuxinator start`. This script uses `fzf` to pick a config and a project folder in one go.

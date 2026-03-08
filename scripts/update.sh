@@ -6,6 +6,27 @@ source "$SCRIPT_DIR/lib/colors.sh"
 
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
+# --- HELP ---
+show_help() {
+    cat << EOF
+${PURPLE}Usage:${NC} neckbeard update [-h]
+
+Pull the latest NeckBeard changes from GitHub, fix script permissions,
+and reset the update-check cache.
+
+${YELLOW}Options:${NC}
+  -h, --help    Show this help message and exit.
+
+${CYAN}Notes:${NC}
+  Deletes .last_update_check so the next neckbeard run re-checks for updates.
+  Requires an active internet connection and a tracked upstream branch.
+EOF
+}
+
+case "$1" in
+    -h|--help) show_help; exit 0 ;;
+esac
+
 echo -e "${BLUE}Checking for updates...${NC}"
 
 git -C "$REPO_DIR" fetch origin 2>/dev/null || {

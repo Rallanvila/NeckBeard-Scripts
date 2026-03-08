@@ -17,6 +17,18 @@ chmod +x "$REPO_DIR/neckbeard"
 chmod +x "$REPO_DIR/scripts/"*.sh
 chmod +x "$REPO_DIR/scripts/lib/"*.sh
 
+# 3. Install man page
+MAN_DIR="$HOME/.local/share/man/man1"
+mkdir -p "$MAN_DIR"
+cp "$REPO_DIR/man/neckbeard.1" "$MAN_DIR/neckbeard.1"
+# Ensure ~/.local/share/man is in MANPATH
+if [[ ":$MANPATH:" != *":$HOME/.local/share/man:"* ]]; then
+    SHELL_CONFIG="$HOME/.zshrc"
+    [[ "$SHELL" == *"bash"* ]] && SHELL_CONFIG="$HOME/.bashrc"
+    echo "export MANPATH=\"\$MANPATH:$HOME/.local/share/man\"" >> "$SHELL_CONFIG"
+    export MANPATH="$MANPATH:$HOME/.local/share/man"
+fi
+
 # 3. Path Configuration
 if [[ ":$PATH:" != *":$REPO_DIR:"* ]]; then
     echo "Adding neckBeard to your PATH..."

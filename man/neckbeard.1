@@ -1,0 +1,129 @@
+.TH NECKBEARD 1 "March 2026" "NeckBeard" "User Commands"
+
+.SH NAME
+neckbeard \- scripts for the minimalist over-engineer
+
+.SH SYNOPSIS
+.B neckbeard
+.I subcommand
+.RI [ options ]
+
+.SH DESCRIPTION
+.B neckbeard
+is a collection of bash scripts designed to eliminate repetitive terminal
+tasks. It dispatches to scripts in the
+.I scripts/
+directory of the installation.
+
+Run any subcommand with
+.B \-h
+or
+.B \-\-help
+for subcommand-specific usage.
+
+.SH SUBCOMMANDS
+
+.TP
+.B tmuxinator \fR[\fB\-h\fR] [\fB\-r\fR]
+Interactively select a Tmuxinator project config and a subdirectory using
+.BR fzf ,
+then launch the session. On first run you will be prompted for your dev
+directory, which is saved to
+.IR settings.env .
+
+.RS
+.TP
+.B \-h, \-\-help
+Show usage and exit.
+.TP
+.B \-r, \-\-reset
+Delete saved settings and re-run first-time setup.
+.RE
+
+.TP
+.B img\-optimize \fR[\fB\-h\fR] [\fIpath\fR]
+Batch-convert JPEG and PNG images in a directory to WebP at three sizes:
+hero (1920px, <500KB), blog (1200px, <200KB), and thumb (400px, <50KB).
+Output is written to
+.I web_optimized/{heros,blogs,thumbs}/
+inside the target directory.
+
+.RS
+.TP
+.B \-h, \-\-help
+Show usage and exit.
+.RE
+
+.TP
+.B nb\-worktrees \fR[\fB\-h\fR]
+Git worktree management. Work in progress.
+
+.RS
+.TP
+.B \-h, \-\-help
+Show usage and exit.
+.RE
+
+.TP
+.B update \fR[\fB\-h\fR]
+Pull the latest changes from the upstream GitHub repository, fix permissions
+on all scripts, and reset the update-check cache so the next run re-checks.
+
+.RS
+.TP
+.B \-h, \-\-help
+Show usage and exit.
+.RE
+
+.SH UPDATE NOTIFICATIONS
+Every invocation of
+.B neckbeard
+checks at most once every 24 hours whether the local branch is behind
+upstream. If an update is available the following notice is printed before
+the subcommand runs:
+
+.RS
+.nf
+\[u1F4A1] Update available! Run: neckbeard update to get the latest.
+.fi
+.RE
+
+.SH FILES
+.TP
+.I ~/.neckBeard/settings.env
+Stores the dev directory path used by the
+.B tmuxinator
+subcommand.
+
+.TP
+.I ~/.neckBeard/.last_update_check
+Unix timestamp of the last upstream fetch. Delete this file to force an
+immediate update check on the next run.
+
+.TP
+.I ~/.neckBeard/scripts/lib/colors.sh
+Shared color palette sourced by every script.
+
+.TP
+.I ~/.neckBeard/scripts/lib/check-deps.sh
+Provides
+.BR check_deps ()
+\(em checks for missing binaries and offers to install via
+.BR pacman .
+
+.TP
+.I ~/.neckBeard/scripts/lib/check-update.sh
+Provides
+.BR check_for_update ()
+\(em rate-limited upstream diff check.
+
+.SH DEPENDENCIES
+.BR fzf ,
+.BR fd ,
+.BR tmuxinator ,
+.BR imagemagick " (magick),"
+.BR git
+
+.SH AUTHOR
+Maintained by Rallanvila.
+Source: https://github.com/Rallanvila/NeckBeard-Scripts
