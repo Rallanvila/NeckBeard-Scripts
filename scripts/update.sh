@@ -63,10 +63,30 @@ if [ "$LOCAL" = "$REMOTE" ]; then
 fi
 
 echo -e "${CYAN}Pulling latest changes...${NC}"
+
+# Stash any local modifications to tracked files so the pull never conflicts
+STASHED=false
+if ! git -C "$REPO_DIR" diff --quiet || ! git -C "$REPO_DIR" diff --cached --quiet; then
+    echo -e "${YELLOW}Local changes detected — stashing before pull...${NC}"
+    git -C "$REPO_DIR" stash push --quiet -m "neckbeard-update" || {
+        echo -e "${RED}Could not stash local changes. Aborting update.${NC}"
+        exit 1
+    }
+    STASHED=true
+fi
+
 git -C "$REPO_DIR" pull || {
     echo -e "${RED}Update failed. Try manually: git -C $REPO_DIR pull${NC}"
+    # Restore stash so the user doesn't lose their changes
+    $STASHED && git -C "$REPO_DIR" stash pop --quiet
     exit 1
 }
+
+# Restore stashed changes
+if $STASHED; then
+    git -C "$REPO_DIR" stash pop --quiet || \
+        echo -e "${YELLOW}Note: could not auto-restore local changes. Run: git -C $REPO_DIR stash pop${NC}"
+fi
 
 # Fix permissions for all scripts including new ones
 chmod +x "$REPO_DIR/neckbeard"
