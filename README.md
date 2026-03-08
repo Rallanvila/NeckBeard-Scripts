@@ -65,6 +65,24 @@ Requires `magick` (imagemagick) and `fd`. If `bat` is installed it previews the 
 
 Git worktree management. Work in progress.
 
+### `update`
+
+Pull the latest NeckBeard changes from GitHub, fix permissions, and reset the update cache.
+
+```bash
+neckbeard update
+```
+
+---
+
+## 🔔 Automatic Update Notifications
+
+Every time you run a `neckbeard` command, it silently checks for upstream changes (at most once every 24 hours — no lag on every run). If you're behind, you'll see:
+
+```
+💡 Update available! Run: neckbeard update to get the latest.
+```
+
 ---
 
 ## 📂 Project Structure
@@ -72,11 +90,13 @@ Git worktree management. Work in progress.
 ```
 scripts/
 ├── lib/
-│   ├── colors.sh       # Shared color palette (source in every script)
-│   └── check-deps.sh   # check_deps() function with install prompt
+│   ├── colors.sh        # Shared color palette (source in every script)
+│   ├── check-deps.sh    # check_deps() function with install prompt
+│   └── check-update.sh  # check_for_update() — upstream diff notice
 ├── img-optimize.sh
 ├── nb-worktrees.sh
-└── tmuxinator.sh
+├── tmuxinator.sh
+└── update.sh
 ```
 
 ### Shared Libraries

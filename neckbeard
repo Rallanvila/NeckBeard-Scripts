@@ -2,14 +2,22 @@
 
 # Get the directory where this script actually lives
 INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# shellcheck source=scripts/lib/colors.sh
+source "$INSTALL_DIR/scripts/lib/colors.sh"
+# shellcheck source=scripts/lib/check-update.sh
+source "$INSTALL_DIR/scripts/lib/check-update.sh"
+
+# Check for upstream updates (rate-limited to once per 24 hours)
+check_for_update
+
 SCRIPT_NAME=$1
 
 # Help menu if no argument is provided
 if [ -z "$SCRIPT_NAME" ]; then
-    echo "Usage: neckbeard <scriptName>"
-    echo "Available scripts:"
-    fd . "$INSTALL_DIR/scripts" -t f -e sh --exec echo '{/.}'
-    # ls "$INSTALL_DIR/scripts" | sed 's/\.sh//'
+    echo -e "${PURPLE}Usage:${NC} neckbeard <scriptName>"
+    echo -e "${YELLOW}Available scripts:${NC}"
+    fd . "$INSTALL_DIR/scripts" -t f -e sh --exclude 'lib' --exec echo '{/.}'
     exit 1
 fi
 
@@ -20,6 +28,6 @@ if [ -f "$TARGET_SCRIPT" ]; then
     shift # Remove 'scriptName' from arguments so the sub-script gets the rest
     bash "$TARGET_SCRIPT" "$@"
 else
-    echo "Error: Script '$SCRIPT_NAME' not found in $INSTALL_DIR/scripts"
+    echo -e "${RED}Error: Script '$SCRIPT_NAME' not found in $INSTALL_DIR/scripts${NC}"
     exit 1
 fi

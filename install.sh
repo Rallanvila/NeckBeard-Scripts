@@ -15,6 +15,7 @@ fi
 # 2. Fix Permissions (Prevents 'permission denied')
 chmod +x "$REPO_DIR/neckbeard"
 chmod +x "$REPO_DIR/scripts/"*.sh
+chmod +x "$REPO_DIR/scripts/lib/"*.sh
 
 # 3. Path Configuration
 if [[ ":$PATH:" != *":$REPO_DIR:"* ]]; then
